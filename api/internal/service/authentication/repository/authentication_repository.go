@@ -8,6 +8,8 @@ import (
 	"github.com/awesomebusiness/uinvest/ent/user"
 	"github.com/awesomebusiness/uinvest/internal/model"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // AuthenticationRepository is repository that handle user authentication
@@ -33,6 +35,9 @@ func (ar *AuthenticationRepository) CreateDataUser(ctx context.Context, input mo
 		SetPassword(input.Password).
 		Save(ctx)
 	if err != nil {
+		log.SetLevel(log.ErrorLevel)
+		log.Errorf("something went wrong: %+v", err)
+
 		return nil, err
 	}
 
@@ -49,10 +54,16 @@ func (ar *AuthenticationRepository) GetDataUser(ctx context.Context, input model
 		)).
 		Only(ctx)
 	if err != nil && user == nil {
+		log.SetLevel(log.WarnLevel)
+		log.Warn("something warn: ", err)
+
 		return nil, errors.New("failed authentication: email or password is not correct")
 	}
 
 	if err != nil {
+		log.SetLevel(log.ErrorLevel)
+		log.Errorf("something went wrong: %+v", err)
+
 		return nil, err
 	}
 

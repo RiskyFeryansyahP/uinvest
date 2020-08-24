@@ -2,18 +2,20 @@ package main
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"os"
 
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/awesomebusiness/uinvest/config"
 	"github.com/awesomebusiness/uinvest/internal/generated"
 	"github.com/awesomebusiness/uinvest/internal/resolver"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication/repository"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication/usecase"
+
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 const defaultPort = "8080"
@@ -23,6 +25,12 @@ func main() {
 
 	// load environment variable from .env
 	_ = godotenv.Load()
+
+	customFormatter := new(logrus.TextFormatter)
+	customFormatter.TimestampFormat = "2006-01-02 15:04:05"
+	customFormatter.FullTimestamp = true
+
+	log.SetFormatter(customFormatter)
 
 	port := os.Getenv("PORT")
 	if port == "" {
