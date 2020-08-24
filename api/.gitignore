@@ -5,3 +5,6 @@
 # environtment
 
 .env
+
+# build
+build/
