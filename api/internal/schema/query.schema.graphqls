@@ -1,0 +1,4 @@
+type Query {
+  login(input: LoginInput!): User!
+  register(input: RegisterInput!): User!
+}
