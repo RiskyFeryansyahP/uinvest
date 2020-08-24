@@ -9,3 +9,5 @@
 - Authentication
     - [ ] Signin
     - [ ] Signup
+    - [ ] Encrypt password
+    - [ ] Validation email and phone number
