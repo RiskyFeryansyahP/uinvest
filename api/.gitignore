@@ -1,3 +1,10 @@
 # idea
 
 .idea
+
+# environtment
+
+.env
+
+# build
+build/
