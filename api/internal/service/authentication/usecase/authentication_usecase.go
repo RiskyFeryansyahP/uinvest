@@ -9,6 +9,7 @@ import (
 	"github.com/awesomebusiness/uinvest/ent"
 	"github.com/awesomebusiness/uinvest/internal/model"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication"
+	"github.com/awesomebusiness/uinvest/util"
 	"golang.org/x/crypto/scrypt"
 )
 
@@ -34,11 +35,11 @@ func (au *AuthenticationUsecase) RegisterValidation(ctx context.Context, input m
 		return nil, errors.New("lastname should not be empty")
 	}
 
-	if input.Email == "" {
-		return nil, errors.New("email is not valid")
+	if !util.IsEmailValid(input.Email) {
+		return nil, errors.New("email is invalid")
 	}
 
-	if input.Phonenumber == "" || len(input.Phonenumber) < 12 {
+	if !util.IsPhoneNumberValid(input.Phonenumber) {
 		return nil, errors.New("phone number is not valid")
 	}
 
@@ -65,7 +66,7 @@ func (au *AuthenticationUsecase) RegisterValidation(ctx context.Context, input m
 
 // AuthenticationValidation validating authentication user
 func (au *AuthenticationUsecase) AuthenticationValidation(ctx context.Context, input model.LoginInput) (*ent.User, error) {
-	if input.Email == "" {
+	if !util.IsEmailValid(input.Email) {
 		return nil, errors.New("email is not valid")
 	}
 
