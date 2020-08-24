@@ -16,7 +16,7 @@ type RegisterInput struct {
 }
 
 type User struct {
-	ID          string `json:"id"`
+	ID          int    `json:"id"`
 	Firstname   string `json:"firstname"`
 	Lastname    string `json:"lastname"`
 	Email       string `json:"email"`
