@@ -7,7 +7,7 @@
 ### Backend
 
 - Authentication
-    - [ ] Signin
-    - [ ] Signup
-    - [ ] Encrypt password
-    - [ ] Validation email and phone number
+    - [X] Signin
+    - [X] Signup
+    - [X] Encrypt password
+    - [X] Validation email and phone number
