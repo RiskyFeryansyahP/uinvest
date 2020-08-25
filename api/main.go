@@ -37,17 +37,17 @@ func main() {
 		port = defaultPort
 	}
 
-	db, err := config.NewDatabase()
+	configInternal, err := config.NewConfigMap()
 	if err != nil {
 		log.Fatalf("%+v", err)
 	}
-	defer db.Client.Close()
+	defer configInternal.Database.Client.Close()
 
-	if err := db.Client.Schema.Create(ctx); err != nil {
+	if err := configInternal.Database.Client.Schema.Create(ctx); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	authrepo := repository.NewAuthenticationRepository(db.Client)
+	authrepo := repository.NewAuthenticationRepository(configInternal.Database.Client)
 	authuc := usecase.NewAuthenticationUsecase(authrepo)
 
 	config := generated.Config{
