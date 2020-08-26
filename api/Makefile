@@ -15,7 +15,7 @@ lint:
 
 build: dep
 	GO111MODULE=on CGO_ENABLED=0 go build -ldflags="-s -w" \
-	-o build/uinvest .
+	-o build/uinvest cmd/main.go
 
 run: build
 	./build/uinvest
