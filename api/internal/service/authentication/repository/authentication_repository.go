@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"errors"
 
 	"github.com/awesomebusiness/uinvest/ent"
 	"github.com/awesomebusiness/uinvest/ent/user"
@@ -53,12 +52,6 @@ func (ar *AuthenticationRepository) GetDataUser(ctx context.Context, input model
 			user.PasswordEQ(input.Password),
 		)).
 		Only(ctx)
-	if err != nil && user == nil {
-		log.SetLevel(log.WarnLevel)
-		log.Warn("something warn: ", err)
-
-		return nil, errors.New("failed authentication: email or password is not correct")
-	}
 
 	if err != nil {
 		log.SetLevel(log.ErrorLevel)
