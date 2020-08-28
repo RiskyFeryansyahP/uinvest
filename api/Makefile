@@ -20,5 +20,11 @@ build: dep
 run: build
 	./build/uinvest
 
+test:
+	go test -v ./... -cover -vet -all -coverprofile=coverage.out
+
+cover:
+	go tool cover -html=coverage.out
+
 generate:
 	go run github.com/99designs/gqlgen
