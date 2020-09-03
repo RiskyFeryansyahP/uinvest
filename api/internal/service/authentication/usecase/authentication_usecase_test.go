@@ -25,7 +25,7 @@ func TestAuthenticationUsecase_RegisterValidation(t *testing.T) {
 			Firstname:   "Risky",
 			Lastname:    "Pribadi",
 			Password:    "risky123",
-			Phonenumber: "6283834121715",
+			Phonenumber: "+6283834121715",
 		}
 
 		inputExpect := model.RegisterInput{
@@ -33,7 +33,7 @@ func TestAuthenticationUsecase_RegisterValidation(t *testing.T) {
 			Firstname:   "Risky",
 			Lastname:    "Pribadi",
 			Password:    "ywHTbCrZCoa2+o3Z34r7HMAAo5Bj6wU/F9AMvXWEKs8=", // encrypted password
-			Phonenumber: "6283834121715",
+			Phonenumber: "+6283834121715",
 		}
 
 		mockRepository.EXPECT().CreateDataUser(ctx, inputExpect).Return(&ent.User{}, nil).Times(1)
@@ -52,7 +52,7 @@ func TestAuthenticationUsecase_RegisterValidation(t *testing.T) {
 			Firstname:   "Risky",
 			Lastname:    "Pribadi",
 			Password:    "risky123",
-			Phonenumber: "6283834121715",
+			Phonenumber: "+6283834121715",
 		}
 
 		inputExpect := model.RegisterInput{
@@ -60,7 +60,7 @@ func TestAuthenticationUsecase_RegisterValidation(t *testing.T) {
 			Firstname:   "Risky",
 			Lastname:    "Pribadi",
 			Password:    "ywHTbCrZCoa2+o3Z34r7HMAAo5Bj6wU/F9AMvXWEKs8=", // encrypted password
-			Phonenumber: "6283834121715",
+			Phonenumber: "+6283834121715",
 		}
 
 		errExpect := fmt.Errorf("something went wrong: failed input to database")
@@ -168,7 +168,7 @@ func TestAuthenticationUsecase_RegisterValidation(t *testing.T) {
 			Firstname:   "Risky",
 			Lastname:    "Pribadi",
 			Password:    "",
-			Phonenumber: "6283834121715",
+			Phonenumber: "+6283834121715",
 		}
 
 		inputExpect := model.RegisterInput{
@@ -176,7 +176,7 @@ func TestAuthenticationUsecase_RegisterValidation(t *testing.T) {
 			Firstname:   "Risky",
 			Lastname:    "Pribadi",
 			Password:    "",
-			Phonenumber: "6283834121715",
+			Phonenumber: "+6283834121715",
 		}
 
 		errExpect := fmt.Errorf("password should not be empty")

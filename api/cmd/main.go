@@ -10,6 +10,7 @@ import (
 	"github.com/awesomebusiness/uinvest/internal/resolver"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication/repository"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication/usecase"
+	"github.com/awesomebusiness/uinvest/pkg"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -47,7 +48,16 @@ func main() {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	authrepo := repository.NewAuthenticationRepository(configInternal.Database.Client)
+	accountID := os.Getenv("TWILLIO_ACCOUNT_ID")
+	authToken := os.Getenv("TWILLIO_AUTH_TOKEN")
+	twillioPhoneNumber := os.Getenv("TWILLIO_PHONE_NUMBER")
+
+	twillioClient, err := pkg.NewTwillioClient(accountID, authToken, twillioPhoneNumber)
+	if err != nil {
+		log.Fatalf("failed create twillio client : %v", err)
+	}
+
+	authrepo := repository.NewAuthenticationRepository(configInternal.Database.Client, twillioClient)
 	authuc := usecase.NewAuthenticationUsecase(authrepo)
 
 	config := generated.Config{
