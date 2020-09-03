@@ -2,24 +2,28 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/awesomebusiness/uinvest/ent"
 	"github.com/awesomebusiness/uinvest/ent/user"
 	"github.com/awesomebusiness/uinvest/internal/model"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication"
+	"github.com/awesomebusiness/uinvest/pkg"
 
 	log "github.com/sirupsen/logrus"
 )
 
 // AuthenticationRepository is repository that handle user authentication
 type AuthenticationRepository struct {
-	DB *ent.Client
+	DB      *ent.Client
+	Twillio pkg.TwillioMessage
 }
 
 // NewAuthenticationRepository create new repository with connected to database
-func NewAuthenticationRepository(db *ent.Client) authentication.RepositoryAuthentication {
+func NewAuthenticationRepository(db *ent.Client, twillioClient pkg.TwillioMessage) authentication.RepositoryAuthentication {
 	return &AuthenticationRepository{
-		DB: db,
+		DB:      db,
+		Twillio: twillioClient,
 	}
 }
 
@@ -40,6 +44,12 @@ func (ar *AuthenticationRepository) CreateDataUser(ctx context.Context, input mo
 		return nil, err
 	}
 
+	messageBody := fmt.Sprintf("Halo %s, Kode Verifikasi pendaftaran di uinvest adalah : 100987", input.Firstname)
+
+	resp, _ := ar.Twillio.SendMessage(input.Phonenumber, messageBody)
+
+	log.Infof("message has been sent with status code %s", resp.Status)
+
 	return newUser, nil
 }
 
@@ -59,6 +69,11 @@ func (ar *AuthenticationRepository) GetDataUser(ctx context.Context, input model
 
 		return nil, err
 	}
+
+	messageBody := fmt.Sprintf("Halo %s, Kode Verifikasi untuk login di uinvest adalah : 100987", user.Firstname)
+
+	resp, _ := ar.Twillio.SendMessage(user.Phonenumber, messageBody)
+	log.Infof("message has been sent with status code %s", resp.Status)
 
 	return user, nil
 }
