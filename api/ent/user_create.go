@@ -56,45 +56,8 @@ func (uc *UserCreate) Mutation() *UserMutation {
 
 // Save creates the User in the database.
 func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
-	if _, ok := uc.mutation.Firstname(); !ok {
-		return nil, &ValidationError{Name: "firstname", err: errors.New("ent: missing required field \"firstname\"")}
-	}
-	if v, ok := uc.mutation.Firstname(); ok {
-		if err := user.FirstnameValidator(v); err != nil {
-			return nil, &ValidationError{Name: "firstname", err: fmt.Errorf("ent: validator failed for field \"firstname\": %w", err)}
-		}
-	}
-	if _, ok := uc.mutation.Lastname(); !ok {
-		return nil, &ValidationError{Name: "lastname", err: errors.New("ent: missing required field \"lastname\"")}
-	}
-	if v, ok := uc.mutation.Lastname(); ok {
-		if err := user.LastnameValidator(v); err != nil {
-			return nil, &ValidationError{Name: "lastname", err: fmt.Errorf("ent: validator failed for field \"lastname\": %w", err)}
-		}
-	}
-	if _, ok := uc.mutation.Email(); !ok {
-		return nil, &ValidationError{Name: "email", err: errors.New("ent: missing required field \"email\"")}
-	}
-	if v, ok := uc.mutation.Email(); ok {
-		if err := user.EmailValidator(v); err != nil {
-			return nil, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
-		}
-	}
-	if _, ok := uc.mutation.Phonenumber(); !ok {
-		return nil, &ValidationError{Name: "phonenumber", err: errors.New("ent: missing required field \"phonenumber\"")}
-	}
-	if v, ok := uc.mutation.Phonenumber(); ok {
-		if err := user.PhonenumberValidator(v); err != nil {
-			return nil, &ValidationError{Name: "phonenumber", err: fmt.Errorf("ent: validator failed for field \"phonenumber\": %w", err)}
-		}
-	}
-	if _, ok := uc.mutation.Password(); !ok {
-		return nil, &ValidationError{Name: "password", err: errors.New("ent: missing required field \"password\"")}
-	}
-	if v, ok := uc.mutation.Password(); ok {
-		if err := user.PasswordValidator(v); err != nil {
-			return nil, &ValidationError{Name: "password", err: fmt.Errorf("ent: validator failed for field \"password\": %w", err)}
-		}
+	if err := uc.preSave(); err != nil {
+		return nil, err
 	}
 	var (
 		err  error
@@ -130,6 +93,50 @@ func (uc *UserCreate) SaveX(ctx context.Context) *User {
 		panic(err)
 	}
 	return v
+}
+
+func (uc *UserCreate) preSave() error {
+	if _, ok := uc.mutation.Firstname(); !ok {
+		return &ValidationError{Name: "firstname", err: errors.New("ent: missing required field \"firstname\"")}
+	}
+	if v, ok := uc.mutation.Firstname(); ok {
+		if err := user.FirstnameValidator(v); err != nil {
+			return &ValidationError{Name: "firstname", err: fmt.Errorf("ent: validator failed for field \"firstname\": %w", err)}
+		}
+	}
+	if _, ok := uc.mutation.Lastname(); !ok {
+		return &ValidationError{Name: "lastname", err: errors.New("ent: missing required field \"lastname\"")}
+	}
+	if v, ok := uc.mutation.Lastname(); ok {
+		if err := user.LastnameValidator(v); err != nil {
+			return &ValidationError{Name: "lastname", err: fmt.Errorf("ent: validator failed for field \"lastname\": %w", err)}
+		}
+	}
+	if _, ok := uc.mutation.Email(); !ok {
+		return &ValidationError{Name: "email", err: errors.New("ent: missing required field \"email\"")}
+	}
+	if v, ok := uc.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
+		}
+	}
+	if _, ok := uc.mutation.Phonenumber(); !ok {
+		return &ValidationError{Name: "phonenumber", err: errors.New("ent: missing required field \"phonenumber\"")}
+	}
+	if v, ok := uc.mutation.Phonenumber(); ok {
+		if err := user.PhonenumberValidator(v); err != nil {
+			return &ValidationError{Name: "phonenumber", err: fmt.Errorf("ent: validator failed for field \"phonenumber\": %w", err)}
+		}
+	}
+	if _, ok := uc.mutation.Password(); !ok {
+		return &ValidationError{Name: "password", err: errors.New("ent: missing required field \"password\"")}
+	}
+	if v, ok := uc.mutation.Password(); ok {
+		if err := user.PasswordValidator(v); err != nil {
+			return &ValidationError{Name: "password", err: fmt.Errorf("ent: validator failed for field \"password\": %w", err)}
+		}
+	}
+	return nil
 }
 
 func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
@@ -197,4 +204,70 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		u.Password = value
 	}
 	return u, _spec
+}
+
+// UserCreateBulk is the builder for creating a bulk of User entities.
+type UserCreateBulk struct {
+	config
+	builders []*UserCreate
+}
+
+// Save creates the User entities in the database.
+func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
+	specs := make([]*sqlgraph.CreateSpec, len(ucb.builders))
+	nodes := make([]*User, len(ucb.builders))
+	mutators := make([]Mutator, len(ucb.builders))
+	for i := range ucb.builders {
+		func(i int, root context.Context) {
+			builder := ucb.builders[i]
+			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+				if err := builder.preSave(); err != nil {
+					return nil, err
+				}
+				mutation, ok := m.(*UserMutation)
+				if !ok {
+					return nil, fmt.Errorf("unexpected mutation type %T", m)
+				}
+				builder.mutation = mutation
+				nodes[i], specs[i] = builder.createSpec()
+				var err error
+				if i < len(mutators)-1 {
+					_, err = mutators[i+1].Mutate(root, ucb.builders[i+1].mutation)
+				} else {
+					// Invoke the actual operation on the latest mutation in the chain.
+					if err = sqlgraph.BatchCreate(ctx, ucb.driver, &sqlgraph.BatchCreateSpec{Nodes: specs}); err != nil {
+						if cerr, ok := isSQLConstraintError(err); ok {
+							err = cerr
+						}
+					}
+				}
+				mutation.done = true
+				if err != nil {
+					return nil, err
+				}
+				id := specs[i].ID.Value.(int64)
+				nodes[i].ID = int(id)
+				return nodes[i], nil
+			})
+			for i := len(builder.hooks) - 1; i >= 0; i-- {
+				mut = builder.hooks[i](mut)
+			}
+			mutators[i] = mut
+		}(i, ctx)
+	}
+	if len(mutators) > 0 {
+		if _, err := mutators[0].Mutate(ctx, ucb.builders[0].mutation); err != nil {
+			return nil, err
+		}
+	}
+	return nodes, nil
+}
+
+// SaveX calls Save and panics if Save returns an error.
+func (ucb *UserCreateBulk) SaveX(ctx context.Context) []*User {
+	v, err := ucb.Save(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return v
 }

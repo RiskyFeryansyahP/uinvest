@@ -14,7 +14,7 @@ var (
 		{Name: "firstname", Type: field.TypeString},
 		{Name: "lastname", Type: field.TypeString},
 		{Name: "email", Type: field.TypeString, Unique: true},
-		{Name: "phonenumber", Type: field.TypeString},
+		{Name: "phonenumber", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 	}
 	// UsersTable holds the schema information for the "users" table.
@@ -23,6 +23,13 @@ var (
 		Columns:     UsersColumns,
 		PrimaryKey:  []*schema.Column{UsersColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
+		Indexes: []*schema.Index{
+			{
+				Name:    "user_email_password",
+				Unique:  true,
+				Columns: []*schema.Column{UsersColumns[3], UsersColumns[5]},
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{

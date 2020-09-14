@@ -30,6 +30,7 @@ func (User) Fields() []ent.Field {
 			NotEmpty().
 			Unique(),
 		field.String("phonenumber").
+			Unique().
 			NotEmpty(),
 		field.String("password").
 			NotEmpty(),
