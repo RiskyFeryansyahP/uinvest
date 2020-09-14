@@ -17,13 +17,13 @@ func IsEmailValid(email string) bool {
 
 // IsPhoneNumberValid is validation to check whether phone number valid or not and return boolean
 func IsPhoneNumberValid(phonenumber string) bool {
-	if phonenumber == "" {
+	if phonenumber == "" || len(phonenumber) < 12 {
 		return false
 	}
 
 	phonenumberChar := string([]rune(phonenumber)[0]) + string([]rune(phonenumber)[1]) + string([]rune(phonenumber)[2])
 
-	if len(phonenumber) < 12 || phonenumberChar != "+62" {
+	if phonenumberChar != "+62" {
 		return false
 	}
 
