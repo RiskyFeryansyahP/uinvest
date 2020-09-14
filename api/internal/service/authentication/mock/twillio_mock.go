@@ -33,17 +33,18 @@ func (m *MockTwillioMessage) EXPECT() *MockTwillioMessageMockRecorder {
 	return m.recorder
 }
 
-// SendMessage mocks base method
-func (m *MockTwillioMessage) SendMessage(toUserNumber, message string) (*http.Response, error) {
+// SendOTP mocks base method
+func (m *MockTwillioMessage) SendOTP(toUserNumber, name string) (*http.Response, int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SendMessage", toUserNumber, message)
+	ret := m.ctrl.Call(m, "SendOTP", toUserNumber, name)
 	ret0, _ := ret[0].(*http.Response)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
-// SendMessage indicates an expected call of SendMessage
-func (mr *MockTwillioMessageMockRecorder) SendMessage(toUserNumber, message interface{}) *gomock.Call {
+// SendOTP indicates an expected call of SendOTP
+func (mr *MockTwillioMessageMockRecorder) SendOTP(toUserNumber, name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMessage", reflect.TypeOf((*MockTwillioMessage)(nil).SendMessage), toUserNumber, message)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendOTP", reflect.TypeOf((*MockTwillioMessage)(nil).SendOTP), toUserNumber, name)
 }

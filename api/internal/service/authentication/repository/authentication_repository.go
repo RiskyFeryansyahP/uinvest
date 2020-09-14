@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/awesomebusiness/uinvest/ent"
 	"github.com/awesomebusiness/uinvest/ent/user"
@@ -28,7 +27,7 @@ func NewAuthenticationRepository(db *ent.Client, twillioClient pkg.TwillioMessag
 }
 
 // CreateDataUser create new user profile to database
-func (ar *AuthenticationRepository) CreateDataUser(ctx context.Context, input model.RegisterInput) (*ent.User, error) {
+func (ar *AuthenticationRepository) CreateDataUser(ctx context.Context, input model.RegisterInput) (*model.User, error) {
 	newUser, err := ar.DB.User.
 		Create().
 		SetFirstname(input.Firstname).
@@ -44,17 +43,25 @@ func (ar *AuthenticationRepository) CreateDataUser(ctx context.Context, input mo
 		return nil, err
 	}
 
-	messageBody := fmt.Sprintf("Halo %s, Kode Verifikasi pendaftaran di uinvest adalah : 100987", input.Firstname)
-
-	resp, _ := ar.Twillio.SendMessage(input.Phonenumber, messageBody)
+	resp, otp, _ := ar.Twillio.SendOTP(input.Phonenumber, input.Firstname)
 
 	log.Infof("message has been sent with status code %s", resp.Status)
 
-	return newUser, nil
+	resultNewUser := &model.User{
+		ID:          newUser.ID,
+		Email:       newUser.Email,
+		Firstname:   newUser.Firstname,
+		Lastname:    newUser.Lastname,
+		Password:    newUser.Password,
+		Phonenumber: newUser.Phonenumber,
+		Otp:         otp,
+	}
+
+	return resultNewUser, nil
 }
 
 // GetDataUser get one data user from database
-func (ar *AuthenticationRepository) GetDataUser(ctx context.Context, input model.LoginInput) (*ent.User, error) {
+func (ar *AuthenticationRepository) GetDataUser(ctx context.Context, input model.LoginInput) (*model.User, error) {
 	user, err := ar.DB.User.
 		Query().
 		Where(user.And(
@@ -70,10 +77,19 @@ func (ar *AuthenticationRepository) GetDataUser(ctx context.Context, input model
 		return nil, err
 	}
 
-	messageBody := fmt.Sprintf("Halo %s, Kode Verifikasi untuk login di uinvest adalah : 100987", user.Firstname)
+	resp, otp, _ := ar.Twillio.SendOTP(user.Phonenumber, user.Firstname)
 
-	resp, _ := ar.Twillio.SendMessage(user.Phonenumber, messageBody)
 	log.Infof("message has been sent with status code %s", resp.Status)
 
-	return user, nil
+	resultUser := &model.User{
+		ID:          user.ID,
+		Email:       user.Email,
+		Firstname:   user.Firstname,
+		Lastname:    user.Lastname,
+		Password:    user.Password,
+		Phonenumber: user.Phonenumber,
+		Otp:         otp,
+	}
+
+	return resultUser, nil
 }

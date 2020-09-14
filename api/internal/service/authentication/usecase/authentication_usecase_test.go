@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/awesomebusiness/uinvest/ent"
 	"github.com/awesomebusiness/uinvest/internal/model"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication/mock"
 	"github.com/golang/mock/gomock"
@@ -36,7 +35,7 @@ func TestAuthenticationUsecase_RegisterValidation(t *testing.T) {
 			Phonenumber: "+6283834121715",
 		}
 
-		mockRepository.EXPECT().CreateDataUser(ctx, inputExpect).Return(&ent.User{}, nil).Times(1)
+		mockRepository.EXPECT().CreateDataUser(ctx, inputExpect).Return(&model.User{}, nil).Times(1)
 
 		authenticationUC := NewAuthenticationUsecase(mockRepository)
 
@@ -239,7 +238,7 @@ func TestAuthenticationUsecase_AuthenticationValidation(t *testing.T) {
 			Password: "ywHTbCrZCoa2+o3Z34r7HMAAo5Bj6wU/F9AMvXWEKs8=",
 		}
 
-		mockRepository.EXPECT().GetDataUser(ctx, inputExpect).Return(&ent.User{}, nil).Times(1)
+		mockRepository.EXPECT().GetDataUser(ctx, inputExpect).Return(&model.User{}, nil).Times(1)
 
 		authenticationUC := NewAuthenticationUsecase(mockRepository)
 

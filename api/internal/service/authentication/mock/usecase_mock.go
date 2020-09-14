@@ -6,7 +6,6 @@ package mock
 
 import (
 	context "context"
-	ent "github.com/awesomebusiness/uinvest/ent"
 	model "github.com/awesomebusiness/uinvest/internal/model"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
@@ -36,10 +35,10 @@ func (m *MockUsecaseAuthentication) EXPECT() *MockUsecaseAuthenticationMockRecor
 }
 
 // AuthenticationValidation mocks base method
-func (m *MockUsecaseAuthentication) AuthenticationValidation(ctx context.Context, input model.LoginInput) (*ent.User, error) {
+func (m *MockUsecaseAuthentication) AuthenticationValidation(ctx context.Context, input model.LoginInput) (*model.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AuthenticationValidation", ctx, input)
-	ret0, _ := ret[0].(*ent.User)
+	ret0, _ := ret[0].(*model.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -51,10 +50,10 @@ func (mr *MockUsecaseAuthenticationMockRecorder) AuthenticationValidation(ctx, i
 }
 
 // RegisterValidation mocks base method
-func (m *MockUsecaseAuthentication) RegisterValidation(ctx context.Context, input model.RegisterInput) (*ent.User, error) {
+func (m *MockUsecaseAuthentication) RegisterValidation(ctx context.Context, input model.RegisterInput) (*model.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RegisterValidation", ctx, input)
-	ret0, _ := ret[0].(*ent.User)
+	ret0, _ := ret[0].(*model.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

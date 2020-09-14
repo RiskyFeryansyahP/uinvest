@@ -39,7 +39,7 @@ func TestAuthenticationRepository(t *testing.T) {
 		}
 
 		twillioMock := mock.NewMockTwillioMessage(ctrl)
-		twillioMock.EXPECT().SendMessage(input.Phonenumber, "Halo Risky, Kode Verifikasi pendaftaran di uinvest adalah : 100987").Times(1).Return(&http.Response{}, nil)
+		twillioMock.EXPECT().SendOTP(input.Phonenumber, input.Firstname).Times(1).Return(&http.Response{}, 1945, nil)
 
 		authenticationRepo := NewAuthenticationRepository(client, twillioMock)
 
@@ -64,7 +64,7 @@ func TestAuthenticationRepository(t *testing.T) {
 
 		authenticationRepo := NewAuthenticationRepository(client, twillioMock)
 
-		twillioMock.EXPECT().SendMessage(input.Phonenumber, "Halo Risky, Kode Verifikasi pendaftaran di uinvest adalah : 100987").Times(1).Return(nil, errTwillio)
+		twillioMock.EXPECT().SendOTP(input.Phonenumber, input.Firstname).Times(1).Return(nil, 1945, errTwillio)
 
 		newUser, err := authenticationRepo.CreateDataUser(ctx, input)
 
@@ -84,7 +84,7 @@ func TestAuthenticationRepository(t *testing.T) {
 		errTwillio := fmt.Errorf("send sms failed, invalid phone number")
 
 		twillioMock := mock.NewMockTwillioMessage(ctrl)
-		twillioMock.EXPECT().SendMessage(nil, nil).Times(1).Return(nil, errTwillio)
+		twillioMock.EXPECT().SendOTP(nil, nil).Times(1).Return(nil, -1, errTwillio)
 
 		authenticationRepo := NewAuthenticationRepository(client, twillioMock)
 
@@ -103,7 +103,7 @@ func TestAuthenticationRepository(t *testing.T) {
 		}
 
 		twillioMock := mock.NewMockTwillioMessage(ctrl)
-		twillioMock.EXPECT().SendMessage("+6283834121715", "Halo Risky, Kode Verifikasi untuk login di uinvest adalah : 100987").Times(1).Return(&http.Response{}, nil)
+		twillioMock.EXPECT().SendOTP("+6283834121715", "Risky").Times(1).Return(&http.Response{}, 1945, nil)
 
 		authenticationRepo := NewAuthenticationRepository(client, twillioMock)
 
@@ -125,7 +125,7 @@ func TestAuthenticationRepository(t *testing.T) {
 		twillioMock := mock.NewMockTwillioMessage(ctrl)
 
 		authenticationRepo := NewAuthenticationRepository(client, twillioMock)
-		twillioMock.EXPECT().SendMessage(nil, nil).Times(1).Return(nil, errTwillio)
+		twillioMock.EXPECT().SendOTP(nil, nil).Times(1).Return(nil, -1, errTwillio)
 
 		user, err := authenticationRepo.GetDataUser(ctx, input)
 
@@ -144,7 +144,7 @@ func TestAuthenticationRepository(t *testing.T) {
 		twillioMock := mock.NewMockTwillioMessage(ctrl)
 
 		authenticationRepo := NewAuthenticationRepository(client, twillioMock)
-		twillioMock.EXPECT().SendMessage(nil, nil).Times(1).Return(nil, errTwillio)
+		twillioMock.EXPECT().SendOTP(nil, nil).Times(1).Return(nil, -1, errTwillio)
 
 		user, err := authenticationRepo.GetDataUser(ctx, input)
 
