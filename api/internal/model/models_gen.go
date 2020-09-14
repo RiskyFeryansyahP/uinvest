@@ -22,4 +22,5 @@ type User struct {
 	Email       string `json:"email"`
 	Phonenumber string `json:"phonenumber"`
 	Password    string `json:"password"`
+	Otp         int    `json:"otp"`
 }
