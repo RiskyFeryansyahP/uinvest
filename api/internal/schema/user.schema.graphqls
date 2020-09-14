@@ -10,6 +10,7 @@ type User {
   email: String!
   phonenumber: String!
   password: String!
+  otp: Int!
 }
 
 input LoginInput {

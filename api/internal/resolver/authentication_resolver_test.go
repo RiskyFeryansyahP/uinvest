@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/awesomebusiness/uinvest/ent"
 	"github.com/awesomebusiness/uinvest/internal/model"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication/mock"
 	"github.com/golang/mock/gomock"
@@ -25,7 +24,7 @@ func TestLogin(t *testing.T) {
 			Password: "risky123",
 		}
 
-		mockAuthenticationUC.EXPECT().AuthenticationValidation(ctx, input).Times(1).Return(&ent.User{}, nil)
+		mockAuthenticationUC.EXPECT().AuthenticationValidation(ctx, input).Times(1).Return(&model.User{}, nil)
 
 		resolverAuthentication := &Resolver{
 			AuthenticationUC: mockAuthenticationUC,
@@ -74,7 +73,7 @@ func TestRegister(t *testing.T) {
 			Phonenumber: "62838341217119",
 		}
 
-		mockAuthenticationUC.EXPECT().RegisterValidation(ctx, input).Times(1).Return(&ent.User{}, nil)
+		mockAuthenticationUC.EXPECT().RegisterValidation(ctx, input).Times(1).Return(&model.User{}, nil)
 
 		resolverAuthentication := &Resolver{
 			AuthenticationUC: mockAuthenticationUC,

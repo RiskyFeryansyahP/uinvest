@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/awesomebusiness/uinvest/util"
 )
 
 // TwillioClient is client of twillio handle field for messaging
@@ -35,9 +37,13 @@ func NewTwillioClient(accountID, authToken string, twillioPhoneNumber string) (T
 	return client, nil
 }
 
-// SendMessage is send message into specific number
-func (t *TwillioClient) SendMessage(toUserNumber string, message string) (*http.Response, error) {
+// SendOTP is send OTP into specific number
+func (t *TwillioClient) SendOTP(toUserNumber string, name string) (*http.Response, int, error) {
 	client := &http.Client{}
+
+	OTP := util.GenerateRandomOTP()
+
+	message := fmt.Sprintf("Halo %s, kode verifikasi u-invest anda %d", name, OTP)
 
 	messageData := url.Values{}
 	messageData.Set("To", toUserNumber)
@@ -52,8 +58,8 @@ func (t *TwillioClient) SendMessage(toUserNumber string, message string) (*http.
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, -1, err
 	}
 
-	return resp, nil
+	return resp, OTP, nil
 }

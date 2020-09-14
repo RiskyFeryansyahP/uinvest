@@ -11,17 +11,7 @@ func (r *queryResolver) Login(ctx context.Context, input model.LoginInput) (*mod
 	if err != nil {
 		return nil, err
 	}
-
-	user := &model.User{
-		ID:          result.ID,
-		Firstname:   result.Firstname,
-		Lastname:    result.Lastname,
-		Email:       result.Email,
-		Password:    result.Password,
-		Phonenumber: result.Phonenumber,
-	}
-
-	return user, nil
+	return result, nil
 }
 
 func (r *queryResolver) Register(ctx context.Context, input model.RegisterInput) (*model.User, error) {
@@ -30,14 +20,5 @@ func (r *queryResolver) Register(ctx context.Context, input model.RegisterInput)
 		return nil, err
 	}
 
-	user := &model.User{
-		ID:          result.ID,
-		Firstname:   result.Firstname,
-		Lastname:    result.Lastname,
-		Email:       result.Email,
-		Password:    result.Password,
-		Phonenumber: result.Phonenumber,
-	}
-
-	return user, nil
+	return result, nil
 }

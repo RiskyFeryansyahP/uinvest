@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"errors"
 
-	"github.com/awesomebusiness/uinvest/ent"
 	"github.com/awesomebusiness/uinvest/internal/model"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication"
 	"github.com/awesomebusiness/uinvest/util"
@@ -25,7 +24,7 @@ func NewAuthenticationUsecase(authrepo authentication.RepositoryAuthentication) 
 }
 
 // RegisterValidation validating register user
-func (au *AuthenticationUsecase) RegisterValidation(ctx context.Context, input model.RegisterInput) (*ent.User, error) {
+func (au *AuthenticationUsecase) RegisterValidation(ctx context.Context, input model.RegisterInput) (*model.User, error) {
 	if input.Firstname == "" {
 		return nil, errors.New("firstname should not be empty")
 	}
@@ -61,7 +60,7 @@ func (au *AuthenticationUsecase) RegisterValidation(ctx context.Context, input m
 }
 
 // AuthenticationValidation validating authentication user
-func (au *AuthenticationUsecase) AuthenticationValidation(ctx context.Context, input model.LoginInput) (*ent.User, error) {
+func (au *AuthenticationUsecase) AuthenticationValidation(ctx context.Context, input model.LoginInput) (*model.User, error) {
 	if !util.IsEmailValid(input.Email) {
 		return nil, errors.New("email is not valid")
 	}
