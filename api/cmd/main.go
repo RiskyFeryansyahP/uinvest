@@ -10,7 +10,7 @@ import (
 	"github.com/awesomebusiness/uinvest/internal/resolver"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication/repository"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication/usecase"
-	"github.com/awesomebusiness/uinvest/pkg"
+	"github.com/awesomebusiness/uinvest/pkg/twillio"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -52,7 +52,7 @@ func main() {
 	authToken := os.Getenv("TWILLIO_AUTH_TOKEN")
 	twillioPhoneNumber := os.Getenv("TWILLIO_PHONE_NUMBER")
 
-	twillioClient, err := pkg.NewTwillioClient(accountID, authToken, twillioPhoneNumber)
+	twillioClient, err := twillio.NewTwillioClient(accountID, authToken, twillioPhoneNumber)
 	if err != nil {
 		log.Fatalf("failed create twillio client : %v", err)
 	}
