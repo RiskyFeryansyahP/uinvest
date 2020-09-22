@@ -23,9 +23,5 @@ func IsPhoneNumberValid(phonenumber string) bool {
 
 	phonenumberChar := string([]rune(phonenumber)[0]) + string([]rune(phonenumber)[1]) + string([]rune(phonenumber)[2])
 
-	if phonenumberChar != "+62" {
-		return false
-	}
-
-	return true
+	return phonenumberChar == "+62"
 }
