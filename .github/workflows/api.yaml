@@ -15,8 +15,7 @@ jobs:
           run: |
             cd api
             go test -test.v -test.coverprofile=coverage.out -test.covermode=count ./...
-
-
+            
   api-lint:
     name: Golangci-lint
     runs-on: ubuntu-latest
