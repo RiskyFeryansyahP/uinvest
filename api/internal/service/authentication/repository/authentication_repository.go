@@ -7,7 +7,7 @@ import (
 	"github.com/awesomebusiness/uinvest/ent/user"
 	"github.com/awesomebusiness/uinvest/internal/model"
 	"github.com/awesomebusiness/uinvest/internal/service/authentication"
-	"github.com/awesomebusiness/uinvest/pkg"
+	"github.com/awesomebusiness/uinvest/pkg/twillio"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -15,11 +15,11 @@ import (
 // AuthenticationRepository is repository that handle user authentication
 type AuthenticationRepository struct {
 	DB      *ent.Client
-	Twillio pkg.TwillioMessage
+	Twillio twillio.TwillioMessage
 }
 
 // NewAuthenticationRepository create new repository with connected to database
-func NewAuthenticationRepository(db *ent.Client, twillioClient pkg.TwillioMessage) authentication.RepositoryAuthentication {
+func NewAuthenticationRepository(db *ent.Client, twillioClient twillio.TwillioMessage) authentication.RepositoryAuthentication {
 	return &AuthenticationRepository{
 		DB:      db,
 		Twillio: twillioClient,
